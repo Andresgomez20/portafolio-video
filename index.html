@@ -56,7 +56,7 @@
     text-align:left;color:inherit;font:inherit;padding:0;transition:transform .2s,border-color .2s}
   .tarjeta:hover{transform:translateY(-4px);border-color:#4a4344}
   .marco{position:relative;aspect-ratio:9/16;background:#000;overflow:hidden}
-  .marco[data-f="1:1"]{aspect-ratio:1} .marco[data-f="4:5"]{aspect-ratio:4/5} .marco[data-f="16:9"]{aspect-ratio:16/9}
+  .marco[data-f="1:1"]{aspect-ratio:1} .marco[data-f="4:5"]{aspect-ratio:4/5} .marco[data-f="16:9"]{aspect-ratio:16/9} .marco[data-f="4:3"]{aspect-ratio:4/3}
   .marco img,.marco video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
   .marco video{opacity:0;transition:opacity .2s} .marco video.activo{opacity:1}
   .marco .play{position:absolute;left:12px;bottom:12px;width:40px;height:40px;border-radius:50%;background:rgba(0,0,0,.55);display:grid;place-items:center;backdrop-filter:blur(4px)}
@@ -88,6 +88,9 @@
   dialog{border:0;background:transparent;max-width:min(92vw,1000px);max-height:92vh;margin:auto;padding:0}
   dialog::backdrop{background:rgba(0,0,0,.85)}
   dialog video{display:block;max-width:100%;max-height:86vh;border-radius:14px;margin:0 auto}
+  dialog [hidden]{display:none!important}
+  #visor-galeria{max-height:86vh;overflow-y:auto;display:flex;flex-direction:column;gap:14px;width:min(92vw,1000px)}
+  #visor-galeria img{width:100%;height:auto;border-radius:14px;display:block}
   dialog .cerrar{position:fixed;top:16px;right:16px;background:#fff;color:#000;border:0;border-radius:50%;width:44px;height:44px;font-size:22px;cursor:pointer}
   dialog .pie{color:#ddd;text-align:center;margin-top:10px;font-size:14px}
 
@@ -123,7 +126,7 @@
   <section id="trabajos">
     <div class="contenedor">
       <h2>Trabajos</h2>
-      <p class="sub">Toca una pieza para verla con sonido.</p>
+      <p class="sub">Toca una pieza para verla completa.</p>
       <div class="filtros" role="group" aria-label="Filtrar por categoría" id="filtros"></div>
       <div class="grilla" id="grilla"></div>
     </div>
@@ -168,6 +171,7 @@
 <dialog id="visor" aria-label="Reproductor">
   <button class="cerrar" aria-label="Cerrar" onclick="cerrar()">×</button>
   <video id="visor-video" controls playsinline></video>
+  <div id="visor-galeria" hidden></div>
   <div class="pie" id="visor-pie"></div>
 </dialog>
 
@@ -230,11 +234,19 @@
     });
   }
   function abrir(p){
-    if (!p.video) return;
-    const v = $("#visor-video");
-    v.src = p.video; v.muted = false;
+    const v = $("#visor-video"), g = $("#visor-galeria");
+    const fotos = p.galeria || (!p.video && p.portada ? [p.portada] : []);
+    if (!p.video && !fotos.length) return;
     $("#visor-pie").textContent = `${p.titulo} — ${p.marca}${p.muestra ? " (pieza de muestra, marca ficticia)" : ""}`;
-    $("#visor").showModal(); v.play().catch(()=>{});
+    if (p.video){
+      g.hidden = true; g.innerHTML = ""; v.hidden = false;
+      v.src = p.video; v.muted = false;
+      $("#visor").showModal(); v.play().catch(()=>{});
+    } else {
+      v.hidden = true; v.removeAttribute("src"); g.hidden = false;
+      g.innerHTML = fotos.map((f, i) => `<img src="${esc(f)}" alt="${esc(p.titulo)} — imagen ${i + 1}" loading="lazy">`).join("");
+      $("#visor").showModal(); g.scrollTop = 0;
+    }
   }
   function cerrar(){ const v = $("#visor-video"); v.pause(); $("#visor").close(); }
   $("#visor").addEventListener("close", () => $("#visor-video").pause());
