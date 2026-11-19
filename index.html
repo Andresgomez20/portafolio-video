@@ -1,0 +1,245 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Portafolio de video</title>
+<meta name="description" content="Edición de video y diseño para marcas pequeñas: reels, anuncios, intros con logo y piezas para redes.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --fondo:#121011; --panel:#1C191A; --borde:#2E2A2B; --texto:#F5EFEA; --suave:#B3A9A3;
+    --acento:#FF5A36; --acento-2:#FFC145;
+    --titulo:"Bricolage Grotesque", "Avenir Next", system-ui, sans-serif;
+    --cuerpo:Inter, system-ui, -apple-system, sans-serif;
+    --radio:18px;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{background:var(--fondo);color:var(--texto);font:16px/1.55 var(--cuerpo);-webkit-font-smoothing:antialiased}
+  a{color:inherit}
+  :focus-visible{outline:3px solid var(--acento-2);outline-offset:3px;border-radius:6px}
+  .contenedor{max-width:1120px;margin:0 auto;padding:0 20px}
+
+  header.barra{position:sticky;top:0;z-index:10;background:color-mix(in srgb,var(--fondo) 85%,transparent);backdrop-filter:blur(10px);border-bottom:1px solid var(--borde)}
+  .barra .contenedor{display:flex;align-items:center;justify-content:space-between;height:64px;gap:16px}
+  .logo{font:800 20px var(--titulo);letter-spacing:-.02em;text-decoration:none}
+  .logo span{color:var(--acento)}
+  nav{display:flex;gap:22px;font-size:15px;color:var(--suave)}
+  nav a{text-decoration:none} nav a:hover{color:var(--texto)}
+  .boton{display:inline-flex;align-items:center;gap:8px;background:var(--acento);color:#fff;font-weight:600;
+    text-decoration:none;padding:12px 20px;border-radius:999px;border:0;cursor:pointer;font-size:15px;transition:transform .15s}
+  .boton:hover{transform:translateY(-2px)}
+  .boton.secundario{background:transparent;border:1px solid var(--borde);color:var(--texto)}
+
+  .hero{padding-top:88px;padding-bottom:56px}
+  .hero .kicker{color:var(--acento-2);font-weight:600;font-size:14px;letter-spacing:.08em;text-transform:uppercase}
+  .hero h1{font:800 clamp(40px,7vw,84px)/1.0 var(--titulo);letter-spacing:-.035em;margin:14px 0 20px;max-width:14ch}
+  .hero h1 em{font-style:normal;color:var(--acento)}
+  .hero p{color:var(--suave);font-size:clamp(17px,2vw,20px);max-width:44ch}
+  .hero .acciones{display:flex;gap:12px;flex-wrap:wrap;margin-top:30px}
+  .datos{display:flex;gap:32px;flex-wrap:wrap;margin-top:48px;color:var(--suave);font-size:14px}
+  .datos b{display:block;color:var(--texto);font:800 26px var(--titulo)}
+
+  section{padding:64px 0}
+  h2{font:800 clamp(30px,4vw,44px)/1.05 var(--titulo);letter-spacing:-.03em;margin-bottom:10px}
+  .sub{color:var(--suave);margin-bottom:28px;max-width:52ch}
+
+  .filtros{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:24px}
+  .filtros button{background:var(--panel);color:var(--suave);border:1px solid var(--borde);padding:8px 16px;border-radius:999px;cursor:pointer;font:500 14px var(--cuerpo)}
+  .filtros button[aria-pressed="true"]{background:var(--texto);color:var(--fondo);border-color:var(--texto)}
+
+  .grilla{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:18px}
+  .tarjeta{background:var(--panel);border:1px solid var(--borde);border-radius:var(--radio);overflow:hidden;cursor:pointer;
+    text-align:left;color:inherit;font:inherit;padding:0;transition:transform .2s,border-color .2s}
+  .tarjeta:hover{transform:translateY(-4px);border-color:#4a4344}
+  .marco{position:relative;aspect-ratio:9/16;background:#000;overflow:hidden}
+  .marco[data-f="1:1"]{aspect-ratio:1} .marco[data-f="4:5"]{aspect-ratio:4/5} .marco[data-f="16:9"]{aspect-ratio:16/9}
+  .marco img,.marco video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+  .marco video{opacity:0;transition:opacity .2s} .marco video.activo{opacity:1}
+  .marco .play{position:absolute;left:12px;bottom:12px;width:40px;height:40px;border-radius:50%;background:rgba(0,0,0,.55);display:grid;place-items:center;backdrop-filter:blur(4px)}
+  .etiqueta{position:absolute;top:12px;left:12px;background:var(--acento-2);color:#1b1306;font-size:12px;font-weight:700;padding:4px 10px;border-radius:999px}
+  .info{padding:14px 16px 16px}
+  .info h3{font:800 18px/1.2 var(--titulo);letter-spacing:-.01em}
+  .info p{color:var(--suave);font-size:14px;margin-top:4px}
+  .chips{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px}
+  .chips span{font-size:12px;color:var(--suave);border:1px solid var(--borde);padding:2px 8px;border-radius:999px}
+  .vacio{border:1px dashed var(--borde);border-radius:var(--radio);padding:48px 24px;text-align:center;color:var(--suave)}
+
+  .servicios{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:16px}
+  .servicio{background:var(--panel);border:1px solid var(--borde);border-radius:var(--radio);padding:24px;display:flex;flex-direction:column;gap:8px}
+  .servicio h3{font:800 21px var(--titulo);letter-spacing:-.01em}
+  .servicio p{color:var(--suave);font-size:15px;flex:1}
+  .precio{display:flex;justify-content:space-between;align-items:baseline;margin-top:10px;padding-top:14px;border-top:1px solid var(--borde)}
+  .precio b{font:800 24px var(--titulo)} .precio small{color:var(--suave);font-size:13px}
+
+  .pasos{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px;counter-reset:p}
+  .paso{border-top:2px solid var(--acento);padding-top:16px}
+  .paso::before{counter-increment:p;content:"0" counter(p);font:800 14px var(--titulo);color:var(--acento)}
+  .paso h3{font:800 19px var(--titulo);margin:6px 0 4px} .paso p{color:var(--suave);font-size:15px}
+
+  .contacto{background:linear-gradient(135deg,#2a1510,#1C191A 60%);border:1px solid var(--borde);border-radius:28px;padding:clamp(28px,5vw,56px);text-align:center}
+  .contacto p{color:var(--suave);margin:10px auto 26px;max-width:44ch}
+  .contacto .acciones{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
+  footer{color:var(--suave);font-size:13px;padding:36px 0 48px;text-align:center}
+
+  dialog{border:0;background:transparent;max-width:min(92vw,1000px);max-height:92vh;margin:auto;padding:0}
+  dialog::backdrop{background:rgba(0,0,0,.85)}
+  dialog video{display:block;max-width:100%;max-height:86vh;border-radius:14px;margin:0 auto}
+  dialog .cerrar{position:fixed;top:16px;right:16px;background:#fff;color:#000;border:0;border-radius:50%;width:44px;height:44px;font-size:22px;cursor:pointer}
+  dialog .pie{color:#ddd;text-align:center;margin-top:10px;font-size:14px}
+
+  @media (max-width:640px){ nav{display:none} .hero{padding-top:56px;padding-bottom:32px} section{padding:44px 0} .grilla{grid-template-columns:repeat(2,1fr);gap:12px} .info{padding:10px 12px 12px} .info h3{font-size:15px} .info p{display:none} }
+  @media (prefers-reduced-motion:reduce){ *{transition:none!important;scroll-behavior:auto!important} }
+</style>
+</head>
+<body>
+<header class="barra">
+  <div class="contenedor">
+    <a class="logo" href="#" id="logo"></a>
+    <nav aria-label="Secciones"><a href="#trabajos">Trabajos</a><a href="#servicios">Servicios</a><a href="#proceso">Cómo trabajo</a></nav>
+    <a class="boton" id="cta-barra" target="_blank" rel="noopener">Cotizar</a>
+  </div>
+</header>
+
+<main>
+  <div class="contenedor hero">
+    <span class="kicker" id="ciudad"></span>
+    <h1>Videos que hacen que <em>paren de deslizar.</em></h1>
+    <p id="bajada"></p>
+    <div class="acciones">
+      <a class="boton" id="cta-hero" target="_blank" rel="noopener">Cotizar por WhatsApp</a>
+      <a class="boton secundario" href="#trabajos">Ver trabajos</a>
+    </div>
+    <div class="datos">
+      <div><b>48 h</b>entrega de reels</div>
+      <div><b>2</b>rondas de cambios incluidas</div>
+      <div><b>Precio fijo</b>antes de empezar</div>
+    </div>
+  </div>
+
+  <section id="trabajos">
+    <div class="contenedor">
+      <h2>Trabajos</h2>
+      <p class="sub">Toca una pieza para verla con sonido.</p>
+      <div class="filtros" role="group" aria-label="Filtrar por categoría" id="filtros"></div>
+      <div class="grilla" id="grilla"></div>
+    </div>
+  </section>
+
+  <section id="servicios">
+    <div class="contenedor">
+      <h2>Servicios y precios</h2>
+      <p class="sub">Precios de referencia en dólares. Cada proyecto lleva un precio fijo acordado antes de empezar, sin sorpresas.</p>
+      <div class="servicios" id="servicios-lista"></div>
+    </div>
+  </section>
+
+  <section id="proceso">
+    <div class="contenedor">
+      <h2>Cómo trabajo</h2>
+      <p class="sub">Simple, por WhatsApp y sin reuniones largas.</p>
+      <div class="pasos">
+        <div class="paso"><h3>Me cuentas la idea</h3><p>Qué quieres anunciar, para qué red y tu material (videos, fotos, logo).</p></div>
+        <div class="paso"><h3>Recibes la propuesta</h3><p>Precio fijo, plazo y lo que incluye. Arrancamos con el 50 %.</p></div>
+        <div class="paso"><h3>Ves la vista previa</h3><p>Me dices qué ajustar. Tienes 2 rondas de cambios incluidas.</p></div>
+        <div class="paso"><h3>Te llega el final</h3><p>En alta calidad y en los formatos de cada red, listo para publicar.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="contenedor">
+      <div class="contacto">
+        <h2>¿Tienes algo que anunciar?</h2>
+        <p>Escríbeme lo que necesitas y te respondo con una propuesta clara y un precio fijo.</p>
+        <div class="acciones">
+          <a class="boton" id="cta-final" target="_blank" rel="noopener">Escribir por WhatsApp</a>
+          <a class="boton secundario" id="cta-correo">Enviar un correo</a>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+<footer id="pie"></footer>
+
+<dialog id="visor" aria-label="Reproductor">
+  <button class="cerrar" aria-label="Cerrar" onclick="cerrar()">×</button>
+  <video id="visor-video" controls playsinline></video>
+  <div class="pie" id="visor-pie"></div>
+</dialog>
+
+<script src="datos.js"></script>
+<script>
+  const E = window.ESTUDIO;
+  const $ = s => document.querySelector(s);
+  const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+  const wa = t => `https://wa.me/${E.whatsapp}?text=${encodeURIComponent(t)}`;
+  const partes = E.nombre.split(" ");
+  $("#logo").innerHTML = `${esc(partes[0])}<span>.</span>video`;
+  document.title = `${E.nombre} · Video y diseño`;
+  $("#ciudad").textContent = E.ciudad;
+  $("#bajada").textContent = E.bajada;
+  const msg = "¡Hola! Vi tu portafolio y quiero cotizar un video para mi marca.";
+  ["#cta-barra", "#cta-hero", "#cta-final"].forEach(id => $(id).href = wa(msg));
+  $("#cta-correo").href = `mailto:${E.correo}?subject=${encodeURIComponent("Cotización de video")}`;
+  $("#pie").textContent = `© ${new Date().getFullYear()} ${E.nombre} · ${E.titulo}`;
+
+  $("#servicios-lista").innerHTML = E.servicios.map(s => `
+    <article class="servicio">
+      <h3>${esc(s.nombre)}</h3><p>${esc(s.detalle)}</p>
+      <div class="precio"><span><small>desde</small> <b>USD ${esc(s.desde)}</b></span><small>${esc(s.plazo)}</small></div>
+    </article>`).join("");
+
+  const cats = ["Todo", ...new Set(E.proyectos.map(p => p.categoria))];
+  let activa = "Todo";
+  function pintarFiltros(){
+    $("#filtros").innerHTML = cats.length > 2 ? cats.map(c => `<button aria-pressed="${c === activa}" data-c="${esc(c)}">${esc(c)}</button>`).join("") : "";
+    $("#filtros").querySelectorAll("button").forEach(b => b.onclick = () => { activa = b.dataset.c; pintarFiltros(); pintar(); });
+  }
+  function pintar(){
+    const lista = E.proyectos.filter(p => activa === "Todo" || p.categoria === activa);
+    if (!lista.length){
+      $("#grilla").innerHTML = `<div class="vacio" style="grid-column:1/-1">Muy pronto: aquí van los trabajos más recientes.<br>Mientras tanto, pídeme muestras por WhatsApp.</div>`;
+      return;
+    }
+    $("#grilla").innerHTML = lista.map((p, i) => `
+      <button class="tarjeta" data-i="${E.proyectos.indexOf(p)}" aria-label="Ver ${esc(p.titulo)}">
+        <div class="marco" data-f="${esc(p.formato || "9:16")}">
+          ${p.portada ? `<img src="${esc(p.portada)}" alt="" loading="lazy">` : ""}
+          ${p.video ? `<video src="${esc(p.video)}" muted loop playsinline preload="none"></video>` : ""}
+          ${p.muestra ? `<span class="etiqueta">Pieza de muestra</span>` : ""}
+          ${p.video ? `<span class="play" aria-hidden="true"><svg width="16" height="16" viewBox="0 0 16 16"><path d="M4 2.5v11l9-5.5z" fill="#fff"/></svg></span>` : ""}
+        </div>
+        <div class="info">
+          <h3>${esc(p.titulo)}</h3>
+          <p>${esc(p.marca)} · ${esc(p.descripcion)}</p>
+          <div class="chips">${(p.hecho || []).map(h => `<span>${esc(h)}</span>`).join("")}</div>
+        </div>
+      </button>`).join("");
+    document.querySelectorAll(".tarjeta").forEach(t => {
+      const v = t.querySelector("video");
+      if (v && matchMedia("(hover:hover)").matches){
+        v.onplaying = () => v.classList.add("activo");
+        t.onmouseenter = () => { v.play().catch(()=>{}); };
+        t.onmouseleave = () => { v.pause(); v.currentTime = 0; v.classList.remove("activo"); };
+      }
+      t.onclick = () => abrir(E.proyectos[t.dataset.i]);
+    });
+  }
+  function abrir(p){
+    if (!p.video) return;
+    const v = $("#visor-video");
+    v.src = p.video; v.muted = false;
+    $("#visor-pie").textContent = `${p.titulo} — ${p.marca}${p.muestra ? " (pieza de muestra, marca ficticia)" : ""}`;
+    $("#visor").showModal(); v.play().catch(()=>{});
+  }
+  function cerrar(){ const v = $("#visor-video"); v.pause(); $("#visor").close(); }
+  $("#visor").addEventListener("close", () => $("#visor-video").pause());
+  $("#visor").addEventListener("click", e => { if (e.target.id === "visor") cerrar(); });
+  pintarFiltros(); pintar();
+</script>
+</body>
+</html>
